@@ -14,7 +14,7 @@ class Graph :
             print("The vertex is added.")
     
     def remove_vertex(self, vertex):
-        
+        pass
 
     def add_neighbor(self, vertex,neighbor):
         if neighbor not in self.vertices :
