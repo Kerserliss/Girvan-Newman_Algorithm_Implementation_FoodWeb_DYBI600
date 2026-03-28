@@ -138,7 +138,7 @@ class Graph :
         
         return self.vertices[index]
     
-    def plot(self, k: int = 5000, desired: float = 0.2, repulsion: float = 0.1,
+    def plot(self, k: int = 10000, desired: float = 0.1, repulsion: float = 0.3,
           attraction: float = 0.1, title: str = "Graph plot",
           output: str = None, show: bool = True):
         """
