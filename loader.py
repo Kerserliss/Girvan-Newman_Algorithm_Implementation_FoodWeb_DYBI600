@@ -46,4 +46,4 @@ def load_karate():
 if __name__ == "__main__":            
     karate_graph, groups = load_karate()
 
-    karate_graph.plot()
+    karate_graph.plot(labels=True)
