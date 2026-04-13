@@ -33,7 +33,7 @@ def brandes(g: Graph):
         sig = {k:0 for k in g.vertices}
         dist = {k:float('inf') for k in g.vertices}
 
-        # the source is set to a dist of 0 and sig of 1
+        # the source is set to a dist of 0 and sigma of 1
         sig[s] = 1
         dist[s] = 0
 
@@ -47,9 +47,6 @@ def brandes(g: Graph):
             stack = [w,] + stack
 
             for v in g.get_neighborhood(w):
-                # TODO: No need when the Graph will use dict instead of list, and correct names instead of indices
-                v = g.vertices[v]
-
                 if dist[v] == float('inf'):
                     dist[v] = dist[w] + 1
                     queue.append(v)
@@ -98,32 +95,41 @@ def girvannewman(g: Graph, method: str="modularity", k: int|None = None):
 
 if __name__ == '__main__':
     # Butterfly graph :-)
-    g = Graph()
-    g.add_vertex("A")
-    g.add_vertex("B")
-    g.add_vertex("C")
+    # g = Graph()
+    # g.add_vertex("A")
+    # g.add_vertex("B")
+    # g.add_vertex("C")
 
-    g.add_edge("A", "B")
-    g.add_edge("A", "C")
-    g.add_edge("B", "C")
+    # g.add_edge("A", "B")
+    # g.add_edge("A", "C")
+    # g.add_edge("B", "C")
 
-    g.add_vertex("D")
-    g.add_vertex("E")
-    g.add_vertex("F")
+    # g.add_vertex("D")
+    # g.add_vertex("E")
+    # g.add_vertex("F")
 
-    g.add_edge("D", "E")
-    g.add_edge("D", "F")
-    g.add_edge("E", "F")
+    # g.add_edge("D", "E")
+    # g.add_edge("D", "F")
+    # g.add_edge("E", "F")
 
-    g.add_edge("C", "D")
-
-
-
-    print(list(set(("1", "2"))))
-    print(list(set(("2", "1"))))
+    # g.add_edge("C", "D")
 
 
-    for e,c in sorted(brandes(g).items(), key=lambda x: x[1]):
+
+    # print(list(set(("1", "2"))))
+    # print(list(set(("2", "1"))))
+
+
+    # for e,c in sorted(brandes(g).items(), key=lambda x: x[1]):
+    #     print(f"{e} = {c}")
+
+    # g.plot(labels=True)
+
+    from loader import load_karate
+
+    karate_graph, groups = load_karate()
+
+    for e,c in sorted(brandes(karate_graph).items(), key=lambda x: x[1]):
         print(f"{e} = {c}")
 
-    g.plot()
+    karate_graph.plot(labels=True)
