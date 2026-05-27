@@ -212,7 +212,7 @@ def _modularity(g: Graph, return_graph: bool = False):
             best_partition = partition_after
 
     if not return_graph:
-        return best_partition, best_Q
+        return best_partition, best_Q, modularity_list
     else:
         return best_partition, best_Q, g_current, modularity_list
 
@@ -279,14 +279,13 @@ def _dendrogram(
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 6))
 
-    ax.cla()  # Clear the axis
+    ax.cla() # Clear the axis
 
-    # Plot dendrogram ON THE PROVIDED AXIS
     dendrogram(
         linkage_matrix,
         orientation="left",
         labels=g_copy.vertices,
-        ax=ax  # This is critical
+        ax=ax
     )
 
     if communities is not None:
@@ -409,108 +408,8 @@ def girvannewman(g: Graph, method: str="modularity",
 
 
 if __name__ == '__main__':
-    # Butterfly graph :-)
-    g = Graph()
-    g.add_vertex("A")
-    g.add_vertex("B")
-    g.add_vertex("C")
+    from loader import load_data_food_web_mat1
 
-    g.add_edge("A", "B")
-    g.add_edge("A", "C")
-    g.add_edge("B", "C")
+    g = load_data_food_web_mat1()
 
-    g.add_vertex("D")
-    g.add_vertex("E")
-    g.add_vertex("F")
-
-    g.add_edge("D", "E")
-    g.add_edge("D", "F")
-    g.add_edge("E", "F")
-
-    g.add_edge("C", "D")
-
-    from loader import load_karate
-    girvannewman(load_karate()[0], method="dendrogram")
-    karate_graph = load_karate()[0]
-    partition = girvannewman(karate_graph, method="communities", k=5)
-
-    print(f"Numebr of communities : {len(partition)}")
-    for i, community in enumerate(partition):
-        print(f"Community {i} : {community}")
-
-    colors = {}
-    color_list = ["red", "blue", "green", "yellow", "purple", "orange"]
-    for i, community in enumerate(partition):
-        for vertex in community:
-            colors[vertex] = color_list[i % len(color_list)]
-
-    karate_graph.plot(
-        labels=True,
-        colors=[colors[v] for v in karate_graph.vertices]
-    )
-
-
-
-    print(list(set(("1", "2"))))
-    print(list(set(("2", "1"))))
-
-
-    for e,c in sorted(brandes(g).items(), key=lambda x: x[1]):
-      print(f"{e} = {c}")
-
-    g.plot(labels=True)
-
-    from loader import load_karate
-
-    karate_graph, groups = load_karate()
-
-    for e,c in sorted(brandes(karate_graph).items(), key=lambda x: x[1]):
-        print(f"{e} = {c}")
-
-    karate_graph.plot(labels=True)
-    karate_graph.plot(labels=True)
-
-#test
-#best_partition, best_Q, Q_values = _modularity(karate_graph)
-#print(best_partition)
-
-#fig, ax = plt.subplots()
-#ax.plot(Q_values)
-#ax.set_xlabel("edges erased")
-#ax.set_ylabel("Q")
-#ax.set_title("Evolution of modularity ")
-#ax.axhline(y=best_Q, color='red', linestyle='--', label=f"Meilleur Q = {best_Q:.3f}")
-#ax.legend()
-#plt.show()
-
-#colors = {}
-#color_list = ["red", "blue", "green", "yellow", "purple", "orange"]
-#for i, community in enumerate(best_partition):
-    #for vertex in community:
-        #colors[vertex] = color_list[i % len(color_list)]
-
-#karate_graph.plot(
-    #labels=True,
-    #colors=[colors[v] for v in karate_graph.vertices]
-#)
-
-
-    from loader import load_karate
-    girvannewman(load_karate()[0], method="modularity", return_graph= False)
-    karate_graph = load_karate()[0]
-    partition = girvannewman(karate_graph, method="modularity", k=5)
-
-    print(f"Numebr of communities : {len(partition)}")
-    for i, community in enumerate(partition):
-        print(f"Community {i} : {community}")
-
-    colors = {}
-    color_list = ["red", "blue", "green", "yellow", "purple", "orange"]
-    for i, community in enumerate(partition):
-        for vertex in community:
-            colors[vertex] = color_list[i % len(color_list)]
-
-    karate_graph.plot(
-        labels=True,
-        colors=[colors[v] for v in karate_graph.vertices]
-    )
+    girvannewman(g, method="dendrogram")
