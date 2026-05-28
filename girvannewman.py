@@ -496,9 +496,9 @@ if __name__ == '__main__':
 
 
     from loader import load_karate
-    girvannewman(load_karate()[0], method="modularity", return_graph= False)
+    girvannewman(load_karate()[0], method="communities", k= 3, return_graph= False)
     karate_graph = load_karate()[0]
-    partition = girvannewman(karate_graph, method="modularity", k=5)
+    partition = girvannewman(karate_graph, method="communities", k=5)
 
     print(f"Numebr of communities : {len(partition)}")
     for i, community in enumerate(partition):
@@ -514,3 +514,76 @@ if __name__ == '__main__':
         labels=True,
         colors=[colors[v] for v in karate_graph.vertices]
     )
+
+
+def plot_communities(g, k):
+    """Visualise les communautés trouvées avec k communautés"""
+    partition = _communities(g, k)
+
+    colors = {}
+    for i, community in enumerate(partition):
+        for vertex in community:
+            colors[vertex] = LABEL_COLORS[i % len(LABEL_COLORS)]
+
+    g.plot(
+        labels=True,
+        colors=[colors[v] for v in g.vertices],
+        title=f"Communities k={k} - {len(partition)} communautés"
+    )
+
+
+def plot_modularity(g):
+    """Visualise les communautés trouvées par modularité"""
+    partition, best_Q = _modularity(g)
+
+    colors = {}
+    for i, community in enumerate(partition):
+        for vertex in community:
+            colors[vertex] = LABEL_COLORS[i % len(LABEL_COLORS)]
+
+    g.plot(
+        labels=True,
+        colors=[colors[v] for v in g.vertices],
+        title=f"Modularity - {len(partition)} communautés - Q={best_Q:.3f}"
+    )
+
+def plot_modularity_evolution(modularity_list, best_Q):
+    """Visualise l'évolution de la modularité au fil des suppressions d'arêtes"""
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # courbe de l'évolution
+    ax.plot(modularity_list, color='blue', label='Modularité Q')
+    
+    # ligne pointillée pour le meilleur Q
+    ax.axhline(y=best_Q, color='red', linestyle='--', 
+               label=f'Meilleur Q = {best_Q:.3f}')
+    
+    # marquer le point du meilleur Q
+    best_index = modularity_list.index(best_Q)
+    ax.scatter(best_index, best_Q, color='red', zorder=5, s=100,
+               label=f'Itération optimale = {best_index}')
+    
+    ax.set_xlabel("Nombre d'arêtes supprimées")
+    ax.set_ylabel("Modularité Q")
+    ax.set_title("Evolution de la modularité")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.show()
+# Tests
+from loader import load_karate
+g, groups = load_karate()
+
+# Test communities
+#plot_communities(g, 2)
+#plot_communities(g, 4)
+
+# Test modularité
+#plot_modularity(g)
+
+best_partition, best_Q, g_current, modularity_list = _modularity(g, return_graph= True)
+
+# visualise evolution
+#plot_modularity_evolution(modularity_list, best_Q)
