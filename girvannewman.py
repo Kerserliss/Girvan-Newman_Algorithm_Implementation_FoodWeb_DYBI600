@@ -212,7 +212,7 @@ def _modularity(g: Graph, return_graph: bool = False):
             best_partition = partition_after
 
     if not return_graph:
-        return best_partition, best_Q
+        return best_partition, best_Q, modularity_list
     else:
         return best_partition, best_Q, g_current, modularity_list
 
@@ -279,14 +279,13 @@ def _dendrogram(
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 6))
 
-    ax.cla()  # Clear the axis
+    ax.cla() # Clear the axis
 
-    # Plot dendrogram ON THE PROVIDED AXIS
     dendrogram(
         linkage_matrix,
         orientation="left",
         labels=g_copy.vertices,
-        ax=ax  # This is critical
+        ax=ax
     )
 
     if communities is not None:
@@ -496,9 +495,9 @@ if __name__ == '__main__':
 
 
     from loader import load_karate
-    girvannewman(load_karate()[0], method="communities", k= 3, return_graph= False)
+    girvannewman(load_karate()[0], method="modularity", return_graph= False)
     karate_graph = load_karate()[0]
-    partition = girvannewman(karate_graph, method="communities", k=5)
+    partition = girvannewman(karate_graph, method="modularity", k=5)
 
     print(f"Numebr of communities : {len(partition)}")
     for i, community in enumerate(partition):

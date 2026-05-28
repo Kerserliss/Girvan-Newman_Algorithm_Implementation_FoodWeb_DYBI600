@@ -1,7 +1,86 @@
 import Graph as g
 import csv 
 
-name_food_web = {0 : "Phytoplancton", 1 : "Suspended Bacteria",2 : "Sediment Bacteria", 3 : "Benthic diatoms", 4 : "Free bacteria", 5 : "Heterotrophic microflagellates", 6 : "Microzooplankton",7: "Zooplankton", 8: "Cnetophore", 9: "Sea nettle", 10 : "Other suspendfeeders", 11 : "Mya", 12 :"Oysters", 13 : "Other polychaetes", 14 : "Nereis", 15: "Macoma spp", 16 : "Meio Fauna", 17 :"Crusta deposit feeders", 18: "Blue Crab", 19 :" Fish Larvae", 20 :"Alewife and Blue herring", 21 : "Bay anchovy", 22 :"Men haden", 23 :"Shad", 24:"Croaker", 25 :"Hog choker", 26 : "Spot", 27 :"White Perch", 28 :"Catfish", 29 :"Blue Fish", 30 : "Weak Fish", 31 :"Summer Flounder", 32 :"Striped bass", 33 : "DOC", 34 :"POC suspended", 35 : "POC sediment"}
+name_food_web = {
+    0 : "Phytoplancton", 
+    1 : "Bacteria attached to suspended POC",
+    2 : "Bacteria attached to sediment POC", 
+    3 : "Benthic diatoms", 
+    4 : "Free bacteria in water columns/DOC", 
+    5 : "Heterotrophic microflagellates", 
+    6 : "Microzooplankton",
+    7 : "Zooplankton", 
+    8 : "Cnetophores", 
+    9 : "Sea nettle", 
+    10 : "Other suspendions feeders", 
+    11 : "Softshell clam", 
+    12 : "American oysters", 
+    13 : "Other polychaetes", 
+    14 : "Nereis (Rag Worm)", 
+    15 : "Macoma spp (bivalve)", 
+    16 : "MeioFauna", 
+    17 : "Crustacean deposit feeders", 
+    18 : "Blue Crab", 
+    19 : "Fish Larvae", 
+    20 : "Alewife and Blue herring", 
+    21 : "Bay anchovy", 
+    22 : "Atlantic menhaden", 
+    23 : "American Shad", 
+    24 : "Atlantic Croaker", 
+    25 : "Hogchoker", 
+    26 : "Spot", 
+    27 : "White Perch", 
+    28 : "Sea catfish", 
+    29 : "Bluefish", 
+    30 : "Weakfish", 
+    31 : "Summer Flounder", 
+    32 : "Striped bassy", 
+    }
+
+foodweb_groups = {
+    "benthic": [
+        2,
+        3,
+        11,
+        12,
+        13,
+        14,
+        15,
+        17,
+        18,
+        24,
+        25,
+        26,
+        28,
+        30,
+        31
+
+    ],
+    "pelagic": [
+        0,
+        1,
+        4,
+        6,
+        7,
+        8,
+        9,
+        19,
+        20,
+        21,
+        22,
+        23,
+        29,
+        32
+
+    ],
+    "undetermined": [
+        5,
+        10,
+        16,
+        27
+
+    ]
+}
 
 def load_karate():
     """
@@ -90,7 +169,7 @@ def load_data_food_web_mat1():
     foodweb_graph = g.Graph(name="FoodWeb")
     with open("data/Foodweb_data/mat_fig7.txt") as fmat :
         lines  = fmat.readlines()
-        assert len(lines) == 36, "Not the right count of vertices in the files."
+        # assert len(lines) == 36, "Not the right count of vertices in the files."
         line_init = lines[0].strip().split()
         k = 0 
         line_init = line_init[1:]
@@ -102,8 +181,14 @@ def load_data_food_web_mat1():
             for j in range(len(lines)):
                 if int(line[j]) > 0:
                     foodweb_graph.add_edge(foodweb_graph.get_vertex(i),foodweb_graph.get_vertex(j))
-                
-        return foodweb_graph
+    
+    groups = {k:[] for k in range(len(foodweb_groups.keys()))}
+    for k,v_list in enumerate(foodweb_groups.values()):
+        for v in v_list:
+            groups[k].append(name_food_web[v])
+
+
+    return foodweb_graph, groups
 
 if __name__ == "__main__":            
     karate_graph, groups = load_karate()
